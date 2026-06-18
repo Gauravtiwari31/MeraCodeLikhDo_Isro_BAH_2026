@@ -219,7 +219,7 @@ html, body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   z-index: 1000;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100% - 48px);
   overflow-y: auto;
 }
 
@@ -678,5 +678,5 @@ input[type="range"].slider::-webkit-slider-thumb:hover {
   .sidebar { display: none; }
   .stat-cards { grid-template-columns: repeat(2, 1fr); }
   .time-slider-container { width: 90%; }
-  .info-panel { width: 280px; right: 12px; bottom: 140px; }
+  .info-panel { width: 280px; right: 12px; bottom: 140px; max-height: calc(100% - 152px); }
 }
