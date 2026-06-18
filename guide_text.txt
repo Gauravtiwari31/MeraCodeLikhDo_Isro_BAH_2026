@@ -1,0 +1,518 @@
+ 
+ 
+ 
+HACKATHON PROJECT GUIDE 
+ 
+GEOSPATIAL AI — SATELLITE-DRIVEN PRECISION AGRICULTURE 
+ 
+AI-DRIVEN AUTOMATED CROP TYPE, MOISTURE 
+STRESS 
+DETECTION & IRRIGATION ADVISORY SYSTEM 
+ 
+Across Growth Stages Using Moderate-Resolution Optical & Microwave Satellite 
+Data 
+ 
+TEAM NAME 
+MeraCodeLikhDo 
+Team Member 
+Role 
+Gaurav Tiwari 
+Team Leader 
+Shubham Singh 
+Member 
+Prajjwal Singh 
+Member 
+Krishna Gupta 
+Member 
+ 
+Built on open ISRO (Bhuvan / Bhoonidhi), ESA and NASA satellite data • 2026 
+ 
+ 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 2 
+Table of Contents 
+ 
+Table of Contents ....................................................................................................................... 2 
+1. Introduction & Background ..................................................................................................... 3 
+2. Problem Statement ................................................................................................................ 3 
+3. Project Objectives .................................................................................................................. 3 
+4. Unique Selling Points (USP) .................................................................................................. 4 
+5. System Architecture Overview ............................................................................................... 5 
+6. Technology Stack (Latest) ...................................................................................................... 6 
+7. Datasets & Data Sources ....................................................................................................... 6 
+8. Detailed Methodology ............................................................................................................ 7 
+9. AI/ML Model Details ............................................................................................................... 8 
+10. Dashboard & Delivery Layer ................................................................................................ 8 
+11. 30-Hour Hackathon Implementation Plan ............................................................................. 9 
+12. Evaluation Parameters ......................................................................................................... 9 
+13. Expected Outcomes & Deliverables ....................................................................................10 
+14. Future Scope & Scalability ..................................................................................................10 
+15. Team MeraCodeLikhDo ......................................................................................................10 
+16. Conclusion ..........................................................................................................................11 
+ 
+ 
+ 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 3 
+1. Introduction & Background 
+ 
+Indian agriculture depends heavily on the timely availability of water, and the gap between crop 
+water demand and actual water supply is one of the biggest drivers of yield loss, farmer distress 
+and inefficient canal-water usage. At the same time, national missions such as PMKSY, the 
+Digital Agriculture Mission, NMSA and PMFBY are increasingly looking for scalable, satellite-
+driven intelligence rather than slow, manual field surveys. 
+Earth observation has matured to a point where optical sensors (LISS-III, AWiFS, Sentinel-2, 
+Landsat, MODIS) and microwave SAR sensors (EOS-04, Sentinel-1, and the upcoming NISAR 
+mission) can be fused to deliver continuous, all-weather monitoring — something that is critical 
+during the cloud-heavy kharif/monsoon season when optical data alone becomes unusable for 
+weeks at a stretch. 
+This project proposes an automated, AI-driven pipeline that goes beyond simple vegetation-
+index monitoring. It identifies crop type, tracks moisture stress in a phenology-aware (growth-
+stage-specific) manner, and converts that stress signal into a practical, field-level irrigation 
+advisory — closing the loop from raw satellite pixels to an action a farmer or canal-command 
+operator can actually use. 
+2. Problem Statement 
+ 
+Despite the availability of rich satellite archives, several practical gaps remain in how moisture 
+stress and irrigation needs are currently assessed: 
+• 
+Cloud cover during the kharif/monsoon season frequently blocks optical satellites for 
+weeks, leaving large monitoring gaps when crops are most vulnerable to water stress. 
+• 
+Most existing stress-detection approaches rely on simple NDVI thresholds and ignore 
+the fact that the same index value means something different at sowing, tillering, 
+flowering or maturity — i.e. they are not phenology-aware. 
+• 
+Crop-type maps are often produced late in the season or require extensive, costly 
+ground surveys, limiting their use for early-season planning. 
+• 
+Irrigation scheduling on the ground is frequently based on convention or guesswork 
+rather than a quantified 8-day water deficit, leading to either water wastage or avoidable 
+crop stress. 
+• 
+Crop insurance verification under PMFBY lacks a continuous, auditable, satellite-backed 
+evidence trail of stress and damage progression. 
+This project addresses each of these gaps within a single, fusion-based, end-to-end pipeline. 
+3. Project Objectives 
+ 
+1. Develop an automated AI/ML methodology for crop type identification for the current 
+cropped season, using multi-temporal spectral signatures learned from the previous 
+cropped season. 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 4 
+2. Detect moisture stress dynamics across crop growth stages by integrating phenology-
+aware modelling with optical and microwave indicators, enabling stage-wise stress 
+interpretation. 
+3. Build a satellite-based system that estimates 8-day crop water deficit and generates 
+field- and command-area-level irrigation advisory maps. 
+4. Unique Selling Points (USP) 
+ 
+Several teams at any geospatial hackathon will build an NDVI-threshold stress map. The points 
+below are what are intended to differentiate this submission — each one targets a real adoption 
+barrier in operational agriculture monitoring, not just a modelling trick. 
+4.1 Foundation-Model-Powered Few-Shot Crop Classification 
+Instead of relying purely on hand-engineered spectral indices and large labelled datasets, the 
+pipeline plugs in pretrained Earth-observation foundation model embeddings (e.g. Google 
+DeepMind AlphaEarth Foundations, NASA-IBM Prithvi-EO-2.0, or the Clay Foundation Model). 
+These embeddings already encode global land-cover and crop-phenology structure, so a 
+lightweight classifier on top can reach strong accuracy with far fewer ground-truth points — 
+directly solving the “ground truth is scarce” problem that limits most operational crop maps. 
+4.2 True Stage-Level Optical–SAR Fusion, Not Just Gap-Filling 
+Most fusion pipelines use SAR only to patch holes left by clouds. This design fuses VV/VH 
+backscatter and texture with optical indices at the level of each phenological stage (sowing, 
+vegetative, flowering, maturity), so the stress index itself is stage-aware rather than a single 
+blended number — giving agronomically meaningful, not just statistically smoothed, output. 
+4.3 Confidence-Aware Advisory Engine 
+Every irrigation advisory ships with an uncertainty flag (via Monte Carlo dropout / quantile 
+estimation), so a canal operator or farmer can see when the model is confident versus when 
+ground verification is recommended. This single feature is what separates a research demo 
+from something an operator would actually trust enough to act on. 
+4.4 Farmer-First Multilingual Delivery Layer 
+A dashboard alone rarely reaches the field. An LLM-based natural-language layer converts the 
+numeric deficit/advisory output into short, plain-language SMS, WhatsApp or IVR voice 
+messages in regional languages (Hindi and others), closing the last-mile gap between a 
+geospatial model and an actual farmer decision. 
+4.5 Canal Command Water-Budget Optimizer 
+Beyond visualizing deficit, the system aggregates pixel-level demand up to the canal outlet / 
+command-area level and suggests a relative water-release prioritization across outlets — 
+turning a monitoring map into an operational scheduling input for irrigation departments. 
+4.6 NISAR-Ready, Future-Proof SAR Ingestion 
+The SAR ingestion module is built as a swappable adapter so that once NISAR data streams 
+become available, the same pipeline can ingest higher-resolution L-band/S-band backscatter 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 5 
+with minimal rework — a deliberate first-mover design choice rather than a one-off Sentinel-1 
+integration. 
+4.7 Insurance-Grade Auditability for PMFBY 
+Each 8-day stress and advisory layer is stored with an immutable, timestamped record, creating 
+a continuous satellite-backed evidence trail that can support faster, more objective PMFBY 
+crop-loss claim verification instead of one-off post-damage assessment. 
+4.8 Zero-License-Cost, Nationally Scalable Stack 
+Every component — from Sentinel/Landsat/MODIS/Bhuvan data to Google Earth Engine, open-
+source ML frameworks and free-tier cloud compute — is open or free-tier by design. This 
+removes the licensing-cost barrier that typically blocks pilots from scaling into state- or national-
+level operational programmes. 
+5. System Architecture Overview 
+ 
+The pipeline is organized as a sequential, modular flow so that each stage can be 
+independently improved, swapped or scaled without breaking the rest of the system: 
+Data Ingestion  →  Pre-processing  →  Feature Engineering  →  Crop Classification  →  
+Phenology-Aware Stress Detection  →  Water Deficit & Advisory Engine  →  Dashboard & 
+Multilingual Delivery 
+ 
+Stage 
+What Happens 
+Key Output 
+Data Ingestion 
+Pull optical (Sentinel-2/Landsat/MODIS/LISS-
+III/AWiFS) and SAR (Sentinel-1/EOS-04) tiles 
+for the AOI via GEE / Bhoonidhi / Bhuvan APIs. 
+Raw multi-temporal 
+stack 
+Pre-processing 
+Atmospheric correction, cloud masking, 
+Refined-Lee speckle filtering, 8-day/weekly 
+temporal compositing. 
+Clean analysis-ready 
+data 
+Feature Engineering 
+NDVI, EVI, NDWI, VCI, SAR VV/VH and VH/VV 
+ratio, GLCM texture, phenometrics (SOS, peak, 
+LGP). 
+Feature cube per pixel 
+Crop Classification 
+Foundation-model embeddings + Random 
+Forest / XGBoost on multi-temporal features. 
+Seasonal crop-type 
+map 
+Stress Detection 
+Stage-aware fusion of NDVI anomaly, NDWI, 
+SAR sensitivity into VCI / SMI indices. 
+Stage-wise stress map 
+Water Deficit & 
+Advisory 
+FAO-56 crop-coefficient ETc estimation vs. 
+rainfall + actual ET; deficit thresholds drive 
+advisory classes. 
+8-day deficit & advisory 
+map 
+Dashboard & Delivery 
+React/Mapbox dashboard, API layer, and 
+multilingual SMS/WhatsApp/IVR push to end 
+users. 
+Actionable advisory in 
+the field 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 6 
+6. Technology Stack (Latest) 
+ 
+Layer 
+Technologies 
+Optical Satellite Data 
+Sentinel-2 L2A, Landsat-8/9 OLI-2, MODIS MOD13Q1, ISRO LISS-III / 
+AWiFS (via Bhuvan / Bhoonidhi) 
+Microwave SAR Data 
+Sentinel-1 GRD/SLC, ISRO EOS-04 SAR, NISAR (planned, modular 
+adapter) 
+Ancillary / Met Data 
+IMD gridded rainfall, ERA5 / CHIRPS reference ET, FAO CROPWAT / 
+AquaCrop crop coefficients, canal command-area GIS layers 
+Geospatial Processing 
+Google Earth Engine, Python (Rasterio, GDAL, Xarray, Rioxarray), 
+QGIS for QA 
+Foundation Models 
+Google AlphaEarth Foundations, NASA-IBM Prithvi-EO-2.0, Clay 
+Foundation Model (embedding-based few-shot classification) 
+Classical ML 
+Random Forest, XGBoost, LightGBM — Scikit-learn 
+Deep Learning 
+LSTM / Temporal Fusion Transformer (time-series dynamics), U-Net / 
+fine-tuned Segment Anything Model (spatial segmentation) — PyTorch, 
+TensorFlow 
+Explainability & 
+Uncertainty 
+SHAP / LIME for feature attribution, Monte Carlo Dropout / quantile 
+regression for confidence scoring 
+Backend / API 
+FastAPI (Python), PostgreSQL + PostGIS for spatial storage, Redis for 
+caching 
+Orchestration 
+Apache Airflow / Prefect for scheduled 8-day pipeline runs 
+Frontend / Dashboard 
+React + Next.js, Mapbox GL JS / deck.gl, Kepler.gl for time-series 
+geospatial views, Tailwind CSS 
+Advisory Delivery 
+LLM-based natural-language generation (multilingual), Twilio / Gupshup 
+APIs for SMS, WhatsApp and IVR voice push 
+DevOps / Cloud 
+Docker, GitHub Actions CI/CD, Google Cloud Run / AWS Lambda 
+(serverless batch jobs), Google Colab for rapid prototyping 
+Mobile / Offline Access 
+Flutter-based PWA with offline tile caching for low-connectivity rural use 
+7. Datasets & Data Sources 
+ 
+7.1 Optical Satellite Data 
+• 
+Sentinel-2 L2A and Landsat-8/9 surface reflectance for fine-resolution vegetation 
+indices. 
+• 
+MODIS MOD13Q1 for long-term, high-frequency vegetation index time series. 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 7 
+• 
+ISRO LISS-III / AWiFS, sourced through Bhuvan or Bhoonidhi, for indigenous moderate-
+resolution coverage. 
+7.2 Microwave SAR Data 
+• 
+Sentinel-1 GRD (VV/VH) for all-weather backscatter and structure information. 
+• 
+ISRO EOS-04 SAR for indigenous C-band coverage, with a modular adapter ready for 
+NISAR once available. 
+7.3 Ancillary & Meteorological Data 
+• 
+IMD gridded rainfall and ERA5 / CHIRPS reference evapotranspiration data. 
+• 
+Canal command-area boundaries, soil maps, and FAO crop-coefficient (Kc) tables. 
+7.4 Ground Truth 
+• 
+Existing crop-type ground survey points from the pilot study area, used for both model 
+training and accuracy validation. 
+All of the above sources are accessible through open national (Bhuvan, Bhoonidhi) or 
+international (Copernicus Open Access Hub, USGS EarthExplorer, Google Earth Engine 
+catalog) portals, which keeps the workflow viable both for a 30-hour prototype and for later 
+operational scaling without licensing overhead. 
+8. Detailed Methodology 
+ 
+8.1 Data Pre-processing 
+• 
+Atmospheric correction of optical imagery and cloud/shadow masking. 
+• 
+Refined-Lee speckle filtering on SAR imagery to suppress noise while preserving edges. 
+• 
+Temporal compositing at weekly, fortnightly and 8-day intervals to build analysis-ready 
+stacks. 
+8.2 Feature Extraction 
+• 
+Vegetation indices: NDVI, EVI, NDWI, VCI. 
+• 
+SAR features: VV, VH backscatter and the VH/VV ratio. 
+• 
+Texture features via Grey-Level Co-occurrence Matrix (GLCM). 
+• 
+Phenological metrics: start of season (SOS), peak growth date, length of growing period 
+(LGP). 
+8.3 Crop Type Classification 
+• 
+Generate foundation-model embeddings for each pixel/parcel time series. 
+• 
+Train Random Forest / XGBoost classifiers on embeddings plus hand-crafted multi-
+temporal features. 
+• 
+Produce a seasonal crop-type map for the pilot command area. 
+8.4 Phenology-Aware Moisture Stress Detection 
+• 
+Compute NDVI anomalies relative to the historical stage-specific baseline. 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 8 
+• 
+Combine NDWI, SAR backscatter sensitivity and soil moisture proxies into a Vegetation 
+Condition Index (VCI) and Soil Moisture Index (SMI). 
+• 
+Classify stress severity separately for each growth stage rather than using one global 
+threshold. 
+8.5 Water Deficit Estimation & Irrigation Advisory 
+• 
+Estimate 8-day crop water demand (ETc) using the FAO-56 crop-coefficient method (Kc 
+× reference ET). 
+• 
+Quantify the deficit between ETc and the sum of effective rainfall and actual 
+evapotranspiration. 
+• 
+Translate the deficit into a categorical irrigation-status map (no action / monitor / irrigate 
+soon / irrigate now), each carrying a confidence flag. 
+8.6 AI/ML Model Development 
+• 
+Combine optical, SAR and meteorological features into a unified feature store. 
+• 
+Train LSTM / Temporal Fusion Transformer models for temporal stress-progression 
+prediction, and U-Net / fine-tuned SAM for spatial parcel segmentation. 
+• 
+Apply SHAP-based explainability so every prediction can be traced back to its driving 
+indices. 
+8.7 Validation 
+• 
+Compare crop-type output against held-out ground-truth points using Overall Accuracy 
+and Kappa coefficient. 
+• 
+Cross-check stress and deficit outputs against any available field reports, weather-
+station records or known stress events for logical consistency. 
+9. AI/ML Model Details 
+ 
+Task 
+Model(s) 
+Why This Choice 
+Crop type classification 
+Foundation-model embeddings + 
+Random Forest / XGBoost 
+Strong accuracy with minimal 
+labelled ground truth 
+Temporal stress dynamics 
+LSTM / Temporal Fusion 
+Transformer 
+Captures stage-to-stage 
+progression, not just snapshots 
+Spatial parcel 
+segmentation 
+U-Net / fine-tuned Segment 
+Anything Model (SAM) 
+Clean field-boundary-aware 
+outputs at scale 
+Explainability 
+SHAP / LIME 
+Builds operator trust by showing 
+which index drove a decision 
+Uncertainty quantification 
+Monte Carlo Dropout / quantile 
+regression 
+Flags low-confidence advisories 
+instead of presenting false 
+certainty 
+10. Dashboard & Delivery Layer 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 9 
+ 
+The output package is designed to be dashboard-ready from day one of the prototype, with a 
+clear path to field-level delivery: 
+• 
+Interactive map (Mapbox GL / deck.gl) with togglable crop-type, stress and advisory 
+layers. 
+• 
+Time-series slider to scrub through 8-day composites and watch stress evolve across a 
+season. 
+• 
+Field/pixel click-through panel showing the SHAP-based explanation behind a given 
+advisory. 
+• 
+One-click PDF/CSV export for offline sharing with canal-command officials. 
+• 
+Multilingual SMS / WhatsApp / IVR push so the same advisory reaches a farmer’s phone 
+in plain language, not just an analyst’s screen. 
+11. 30-Hour Hackathon Implementation Plan 
+ 
+Hours 
+Activities 
+0–2 
+Team kickoff, repository scaffold, Google Earth Engine / Bhoonidhi authentication, 
+pilot AOI finalization. 
+2–6 
+Build the data-ingestion pipeline for optical (Sentinel-2/Landsat) and SAR 
+(Sentinel-1) tiles over the pilot command area. 
+6–10 
+Pre-processing (cloud masking, speckle filtering, compositing) and feature 
+extraction (NDVI/EVI/NDWI, VV/VH, GLCM). 
+10–14 
+Train baseline Random Forest / XGBoost crop classifier; experiment with 
+foundation-model embeddings for few-shot gains. 
+14–18 
+Build phenology-aware moisture stress indices (VCI/SMI) and stage-wise 
+classification logic. 
+18–22 
+Implement FAO-56 ETc water-deficit estimation and the irrigation-advisory rule 
+engine with confidence flags. 
+22–26 
+Build the React/Mapbox dashboard; wire up validation against ground-truth crop 
+points; compute accuracy/Kappa. 
+26–29 
+Integrate the multilingual advisory layer demo, polish UX, run end-to-end tests, 
+prepare the pitch deck. 
+29–30 
+Final rehearsal and hackathon submission. 
+12. Evaluation Parameters 
+ 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 10 
+• 
+Crop classification accuracy target of greater than 85% Overall Accuracy where 
+representative training/validation samples exist, reported alongside the Kappa 
+coefficient. 
+• 
+Moisture stress classification must be growth-stage aware and show logical 
+correspondence with the underlying satellite indices (not a flat, season-wide threshold). 
+• 
+Water-deficit (ETc) estimates benchmarked against FAO-56 reference methodology, 
+tracked via RMSE. 
+• 
+Irrigation advisory layers judged on credibility for command-area planning — consistency 
+with any available rainfall, weather-station or field-report data. 
+13. Expected Outcomes & Deliverables 
+ 
+• 
+A working pipeline demonstrated on a defined pilot command area, using pre-identified 
+crop labels and cloud-hosted satellite collections within the 30-hour window. 
+• 
+A methodology and user interface for generating automated, high-resolution crop-type, 
+stage-wise moisture-stress and irrigation-advisory maps. 
+• 
+A dashboard-ready package: colour-coded stress maps, growth-stage interpretation, 
+field/pixel-level advisory layers and time-series visualization. 
+• 
+A scalable model design that can extend from a single pilot command area to larger 
+agricultural regions and multiple crop seasons. 
+14. Future Scope & Scalability 
+ 
+• 
+Pan-India scale-up by replicating the pipeline across additional canal command areas 
+and agro-climatic zones. 
+• 
+Direct ingestion of NISAR SAR data once available, for finer-resolution all-weather 
+monitoring. 
+• 
+IoT soil-moisture sensor fusion to ground-calibrate the satellite-derived stress index in 
+near-real time. 
+• 
+Drone-based spot ground-truthing to continuously refine classifier training data with 
+minimal manual survey effort. 
+• 
+Deeper integration with PMFBY claim workflows and the Digital Agriculture Mission's 
+farmer registry for direct benefit delivery. 
+15. Team MeraCodeLikhDo 
+ 
+Name 
+Suggested Focus Area 
+Gaurav Tiwari (Leader) 
+Team leadership, system architecture and end-to-end pipeline 
+integration 
+Team MeraCodeLikhDo 
+AI Crop Monitoring & Irrigation Advisory 
+Page 11 
+Shubham Singh 
+Satellite data engineering — optical/SAR ingestion, pre-processing 
+and feature extraction 
+Prajjwal Singh 
+AI/ML engineering — crop classification, stress detection and 
+water-deficit modelling 
+Krishna Gupta 
+Full-stack development — dashboard, API layer and multilingual 
+advisory delivery 
+ 
+Roles above are suggested for execution clarity and can be adjusted based on individual team strengths. 
+16. Conclusion 
+ 
+This project converts a well-known but operationally difficult challenge — turning raw, multi-
+sensor satellite data into a trustworthy, field-actionable irrigation advisory — into a single, 
+modular AI pipeline. By fusing optical and SAR data at the phenological-stage level, layering in 
+foundation-model embeddings for few-shot crop classification, and closing the loop with a 
+confidence-aware, multilingual advisory delivery layer, the solution is designed to be both 
+hackathon-demoable in 30 hours and credible as a path toward real operational deployment 
+under programmes like PMKSY, the Digital Agriculture Mission and PMFBY. 
+Team MeraCodeLikhDo — Gaurav Tiwari, Shubham Singh, Prajjwal Singh and Krishna 
+Gupta — aims to demonstrate this end-to-end, from satellite pixel to farmer advisory. 
