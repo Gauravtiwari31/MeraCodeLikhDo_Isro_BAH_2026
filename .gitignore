@@ -25,3 +25,9 @@ data/processed/
 pgdata/
 .env.local
 .env.production
+
+# Videos
+*.mp4
+*.mov
+mera-code-likh-do-isro-bah-2026.mp4
+

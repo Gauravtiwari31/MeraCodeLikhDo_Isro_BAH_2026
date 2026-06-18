@@ -3,6 +3,8 @@
 > **ISRO BAH 2026 Hackathon Submission**  
 > **Team:** MeraCodeLikhDo | Gaurav Tiwari (Lead), Shubham Singh, Prajjwal Singh, Krishna Gupta
 
+![MeraCodeLikhDo Dashboard](mera-code-likh-do-isro-bah-2026.png)
+
 ---
 
 ## 🌾 What This Does
