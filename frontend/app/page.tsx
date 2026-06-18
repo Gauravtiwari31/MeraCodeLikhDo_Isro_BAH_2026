@@ -8,7 +8,6 @@ import StatCards from "@/components/StatCards";
 import TimeSlider from "@/components/TimeSlider";
 import InfoPanel from "@/components/InfoPanel";
 import BottomPanel from "@/components/BottomPanel";
-import { usePipelineStatus } from "@/lib/hooks";
 
 // Dynamically import map (avoids SSR issues with Mapbox)
 const MapView = dynamic(() => import("@/components/MapView"), {
@@ -48,7 +47,6 @@ export default function DashboardPage() {
   const [bottomTab, setBottomTab] = useState<"canal" | "advisory" | "ndvi">("canal");
 
   const selectedDate = COMPOSITE_DATES[selectedDateIdx];
-  const { status } = usePipelineStatus();
 
   const handleFeatureClick = useCallback((feature: any) => {
     setSelectedFeature(feature);
@@ -57,7 +55,7 @@ export default function DashboardPage() {
   return (
     <div className="app-layout">
       {/* ── Top bar ── */}
-      <Topbar status={status} />
+      <Topbar />
 
       {/* ── Stat cards ── */}
       <StatCards date={selectedDate} activeLayer={activeLayer} />
